@@ -1,6 +1,6 @@
-# PSA Process Optimization Using NSGA-II
+# PSA Process Optimisation Using NSGA-II
 
-This project was part of an exploratory study focused on optimising a Pressure Swing Adsorption (PSA) process for hydrogen separation. The MATLAB script uses the NSGA-II multi-objective evolutionary algorithm to optimise key process variables with respect to purity and recovery objectives.
+This project was part of study focused on optimising a Pressure Swing Adsorption (PSA) process for hydrogen separation. The MATLAB script uses the NSGA-II multi-objective evolutionary algorithm to optimise key process variables with respect to purity and recovery objectives.
 
 ---
 
