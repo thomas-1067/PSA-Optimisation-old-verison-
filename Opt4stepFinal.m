@@ -80,21 +80,14 @@ end
 disp(objectives)
 input_var = result.pops(idx).var;
 disp(input_var)
-% Plotting the Pareto front
 
+% Plotting the Pareto front
 figure(1);
 set(gcf, 'Position', [90, 90, 500, 300], 'Color', 'w');
 scatter(rankOneObjectivePairs(:,1), rankOneObjectivePairs(:,2), 'bo','MarkerFaceColor', 'b');
-% hold on
-% scatter(rankOneObjectivePairs(end,1), rankOneObjectivePairs(end,2),30,'rv','Linewidth',1.2);
 xlabel('Productivity (mol_{H2out}/mol_{in}s)');
-% xlabel('H_2 Purity (%)');
 ylabel('Energy (kWh/mol_{H2out})');
-% title('Pareto Front for Rank 1 Individuals');
 ax = gca; % Current axis
-% ax.GridLineStyle = '--';
-% ax.GridColor = 'k'; % Changing grid color to black for contrast
-% ax.GridAlpha = 0.5; % Making grid lines slightly transparent
 
 
 ax.LineWidth = 1.2; % Making axes lines thicker
@@ -102,26 +95,6 @@ ax.FontSize = 12; % Increasing font size for better readability
 axis tight;
 % Add a box around the plot for better framing
 box on;
-
-
-
-% return
-% epl = 0.37;
-% Ad_Time = 50; % Adsorption Time
-% Pur_Time = 30; % Purge Time
-% Ad_Fv = 0.1*epl; % Adsorption feed superfiscial velocity
-% Pur_Fv = 0.1*epl; % Purge feed superfiscial velocity
-% Ad_P = 8e5; % adsorption pressure
-% 
-%  
-% [Purity_CH4, Purity_H2, Recovery_CH4, Recovery_H2, Work, MB] = PSA_Process(Ad_Time,Ad_Fv,Pur_Fv,Ad_P);
-% 
-%     fprintf('Purity of CH4: %.2f%%\n', Purity_CH4 * 100);
-%     fprintf('Purity of H2: %.2f%%\n', Purity_H2 * 100);
-%     fprintf('Recovery of CH4: %.2f%%\n', Recovery_CH4 * 100);
-%     fprintf('Recovery of H2: %.2f%%\n', Recovery_H2 * 100);
-%     fprintf('Work required: %.2f kWh\n', Work);
-%     fprintf('Mass balacne error: %.2f kWh\n', MB);
 
 function  [objectives, con] = PSA_Process(x,N,c)
 % Physical Parameters
@@ -574,35 +547,6 @@ for plotingstuff = 1
     zlabel('Velocity')
     title('Purge')
 
-    
-%     return
-%     
-%     figure(4)
-% %     subplot(1,2,1)
-% %     mesh(sol.x,z,velocity)
-% %     xlabel('t')
-% %     ylabel('bed length')
-% %     zlabel('Velocity')
-% %     title('Intersistial velocity of system')
-% %     subplot(1,2,2)
-%     mesh(solAd.x,zhalf,Advhalf)
-%     xlabel('t')
-%     ylabel('bed length')
-%     zlabel('Velocity')
-%     title('Intersistial velocity of system')
-%     
-%     figure(5)
-%     subplot(1,2,1)
-%     mesh(solAd.x,zhalf,phalfspan)
-%     xlabel('t')
-%     ylabel('bed length')
-%     zlabel('dPhalfdz for uhalf')
-%     subplot(1,2,2)
-%     mesh(solAd.x,zhalf,pspan)
-%     xlabel('t')
-%     ylabel('bed length')
-%     zlabel('Phalf at zhalf')
-
 end  
 end
 %% Solver function
@@ -697,33 +641,6 @@ for cycleNo = 1:cycleEnd
         DeP(3*n+1:4*n) = round(Tinit,signumber,"significant");
         DeP(4*n+1:5*n) = round(Pinit/1e5,signumber,"significant");
         end
-%                 % Reverse steps bed conditions
-%         if stepNo == 3 || stepNo == 4
-%         Yinit = flip(Yinit);
-%         q1init = flip(q1init);
-%         q2init = flip(q2init);
-%         Tinit = flip(Tinit);
-%         Pinit = flip(Pinit);
-%         end
-%         
-%         YCA = 100*condenseArrayToFiveMeans(Yinit)';
-%         Q1CA = condenseArrayToFiveMeans(q1init)';
-%         Q2CA = condenseArrayToFiveMeans(q2init)';
-%         TCA = (condenseArrayToFiveMeans(Tinit)-273.15)';
-%         PCA = 1/1e5*condenseArrayToFiveMeans(Pinit)';
-%         fprintf('\nStep Number: %d of Cycle: %d\n',stepNo, cycleNo)
-%         fprintf('%7s %7s %7s %7s %7s\n','Y1%:','Q1:','Q2:','T(C):','P(Bar):');
-%         fprintf('%7.2f %7.2f %7.2f %7.2f %7.2f\n',[YCA ,Q1CA, Q2CA,TCA,PCA]');
-%         %fprintf('Mole Fraction (%%): %4.2f \n Methane loading: %4.2f ', YCA, Q1CA)
-%         
-%         % Reverse steps bed conditions
-%         if stepNo == 3 || stepNo == 4
-%         Yinit = flip(Yinit);
-%         q1init = flip(q1init);
-%         q2init = flip(q2init);
-%         Tinit = flip(Tinit);
-%         Pinit = flip(Pinit);
-%         end
         
          % Reverse steps bed conditions
         if stepNo == 2 || stepNo == 4
@@ -792,10 +709,8 @@ for cycleNo = 1:cycleEnd
         CSS_perdiff = abs((statesPC-statesFC)./statesFC);
         Approx_CSS = mean(CSS_perdiff);
         disp(Approx_CSS)
-    %     isSame = [isequal(PrevPr,Pr);isequal(PrevAd,Ad);isequal(PrevDeP,DeP);isequal(PrevPur,Pur)]
-%         CSS_states = norm(statesPC-statesFC)
          all(CSS_perdiff <= 2.5e-3)
-%         if all(isSame(:) == 1) && cycleNo ~= cycleEnd
+
         if all(CSS_perdiff <= 2.5e-3) 
             Quitcycle = 1;
         elseif cycleNo ~= cycleEnd
@@ -805,7 +720,6 @@ for cycleNo = 1:cycleEnd
             PrevPur = Pur;
         end
     % if not then save prev to current
-    
     % if yes set cycle end to next and pull out of loop
 end
 
@@ -924,13 +838,10 @@ if stepNo == 1
 elseif stepNo == 2
     
      uhalf(1) = ufeed - ufeed*exp(-0.5*t);
-    
-%     Phalf(1) = (P(1) + h/2*Bcoeff*uhalf(1)*visc)./ (1 - h/2*Acoeff.*rhog(1)*uhalf(1)^2/P(1));
     Phalf(1) = P(1) + h/2*(Bcoeff*uhalf(1)*visc + Acoeff.*rhog(1)*uhalf(1)^2);
     Phalf(n+1) = PH;
     
     yhalf(1) = (y1(1) + yiFeed*uhalf(1)*h/D/2) / (1 + uhalf(1)*h/D/2);
-%     yhalf(1) = yiFeed;
     yhalf(n+1) = y1(n);
     
     rhogInlet = ((Phalf(1)) .* (yhalf(1)*16.04e-3 + (1-yhalf(1))*2.02e-3)) ./ (R*Tfeed);
@@ -939,7 +850,6 @@ elseif stepNo == 2
     CpgInlet = (yhalf(1).*Cpg1in + (1-yhalf(1)).*Cpg2in);
     
     Thalf(1) = (T(1) + Tfeed*uhalf(1)*epl*rhogInlet*CpgInlet*h/Kl/2) / (1 + uhalf(1)*epl*rhogInlet*CpgInlet*h/Kl/2);
-%     Thalf(1) = Tfeed;
     Thalf(n+1) = T(n);
     
     
@@ -986,13 +896,9 @@ elseif stepNo == 3
 elseif stepNo == 4
     
     uhalf(1) = ufeed_purge - ufeed_purge*exp(-0.5*t);
-    
-%     Phalf(1) = (P(1) + h/2*Bcoeff*uhalf(1)*visc)./ (1 - h/2*Acoeff.*rhog(1)*uhalf(1)^2/P(1));
     Phalf(1) = P(1) + h/2*(Bcoeff*uhalf(1)*visc + Acoeff.*rhog(1)*uhalf(1)^2);
     Phalf(n+1) = PL;
-%     yFeedfromAD1 = interp1(TimeoutAD,yAdOut,t);
     yFeedfromAD2 = sum(trapz(TimeoutAD,yAdOut))/TimeoutAD(end);
-%     yhalf(1) = yFeedfromAD2;
     yhalf(1) = (y1(1) + yFeedfromAD2*uhalf(1)*h/D/2) / (1 + uhalf(1)*h/D/2);
     yhalf(n+1) = y1(n);
 
@@ -1066,9 +972,6 @@ end
 
 u = zeros(n,1);
 deltP = (Phalf(2:n+1) - Phalf(1:n));
-% deltP(1) = (-P(2)+8*Phalf(2)-7*Phalf(1))/6;
-% deltP(2:n-1) = (-P(3:n)+8*Phalf(3:n)-8*Phalf(2:n-1)+P(1:n-2))/6;
-% deltP(n) = (7*Phalf(n+1)-8*Phalf(n)+P(n-1))/6;
 for i = 1:n
     if deltP(i) < 0
         u(i) = (-(Bcoeff.*visc) + sqrt((Bcoeff.*visc)^2 - 4 * deltP(i)/h .* (Acoeff.*rhog(i)))) ./ (2*(Acoeff.*rhog(i)));
@@ -1079,11 +982,7 @@ for i = 1:n
         u(i) = 0;
     end
 end
-% if stepNo == 3
-% P
-% Phalf
-% uhalf
-% end
+
 %%%%%%%%%%%%%%% Langmuir Equation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % CH4
 a11 = -9.5592;	a21 = 4638.5;	b11 = 3.725e-4/1e5;	b21 = 1.443e4;
@@ -1095,7 +994,8 @@ B1 = b11.*exp(b21./(8.3145.*T));
 B2 = b12.*exp(b22./(8.3145*T));
 qstar1 = (qs1.*B1.*P.*y1) ./ (1+((P.*y1.*B1)+(P.*(1-y1).*B2))); %mols/kg
 qstar2 = (qs2.*B2.*P.*(1-y1)) ./ (1+((P.*y1.*B1)+(P.*(1-y1).*B2)));
-% %% LRC
+
+% %% LRC method
 % Plrc = P/101325;
 % % CH4
 % k1c = 23.86e-3;	k2c = -0.0562e-3;	k3c = 2.81093e-3;	k4c = 1220; k5c = 1.628; k6c = -248.9;
@@ -1142,7 +1042,7 @@ dydz3 = zeros(n,1);
 dydz4 = zeros(n,1);
 dydz5 = zeros(n,1);
 
-% % Wall balance
+% % Wall balance, not used
 % Tatm = 292.5 ;                   % ambient temp
 % hi = 38.4928;                   % heat transfer coefficient J/m2/s/K
 % ho = 14.2256;
@@ -1156,24 +1056,15 @@ dydz5 = zeros(n,1);
 % dTwdt(1:n) =  0;% 1./(rhow*Cpw*Aw) .* ((2*pi*Rbi*hi*(T(1:n) - Tw(1:n)) - 2*pi*Rbo*ho*(T(1:n) - Tatm)));
 
 %% Energy balance
-
-% sink = 1./(eplt.*rhog(1:n).*Cpg(1:n)+(1-epl).*rhob*Cps);
 sink =1./(eplt.*rhog.*Cpg + ((1-epl).*Cpa.*(q1+q2) + rhob.*Cps));
 
 dTdz1(1) = Kl.*( (T(2)-T(1))./h - 2.*(T(1)-Thalf(1))./h )./h;
 dTdz1(2:n-1) = Kl.*( (T(3:n)-T(2:n-1))./h - (T(2:n-1)-T(1:n-2))./h )./h;
 dTdz1(n) = Kl.*( 2.*(Thalf(n+1)-T(n))./h - (T(n)-T(n-1))./h )./h;
 
-% dTdz2(1:n) = - Cpg(1:n).*epl.*(rhoghalf(2:n+1).*Thalf(2:n+1).*uhalf(2:n+1)-rhoghalf(1:n).*Thalf(1:n).*uhalf(1:n))./h;
-% dTdz2(2:n-1) = - Cpg(2:n-1).*epl.*(rhoghalf(3:n).*Thalf(3:n).*uhalf(3:n)-rhoghalf(2:n-1).*Thalf(2:n-1).*uhalf(2:n-1))./h;
-% dTdz2(1:n) = - Cpg(1:n).*epl.*rhog(1:n).*u(1:n).*( Thalf(2:n+1)-Thalf(1:n) )./h;
-% dTdz2(1:n) = - Cpg(1:n).*epl.*rhog(1:n).*u(1:n).*( Thalf(2:n+1)-Thalf(1:n) )./h;
 dTdz2(1:n) = -Cpg(1:n).*epl./R.*( (Phalf(2:n+1).*uhalf(2:n+1)-Phalf(1:n).*uhalf(1:n)) - T(1:n).*(Phalf(2:n+1).*uhalf(2:n+1)./Thalf(2:n+1)-Phalf(1:n).*uhalf(1:n)./Thalf(1:n)) )/h;
 
 dTdz3(1:n) = rhob.*(deltaH(1).*dq1dt(1:n) + deltaH(2).*dq2dt(1:n));
-% dTdz3(1:n) = - (1-epl).*rhob.*(deltaH(1).*dq1dt(1:n) + deltaH(2).*dq2dt(1:n));
-
-%dTdz4 = - 2*hi/Rbi*(T(1:n)-Tw(1:n));
 
 % Temporal EB
 dTdt(1:n) = sink.* (dTdz1(1:n) + dTdz2(1:n) + dTdz3(1:n));% + dTdz4(1:n));
@@ -1201,18 +1092,10 @@ dy2dz(n) = ( 2.*(yhalf(n+1)-y1(n))/h - (y1(n)-y1(n-1))./h )./h;
 
 
 dydz1(1:n) = D.*( dy2dz(1:n) + ( (Phalf(2:n+1)-Phalf(1:n))./h .* (yhalf(2:n+1) - yhalf(1:n))./h )./P(1:n) - ( (Thalf(2:n+1)-Thalf(1:n))./h .* (yhalf(2:n+1) - yhalf(1:n))./h )./T(1:n));
-% dydz1(1) = (D.*T(1)./(h.*P(1))) * ( (Phalf(2)./Thalf(2)).*((y1(2)-y1(1))/h)-(Phalf(1)./Thalf(1)).*(2/h*(y1(1)-yhalf(1))));
-% dydz1(2:n-1) = (D.*T(2:n-1)./(h.*P(2:n-1))) .* ( (Phalf(3:n)./Thalf(3:n)).*((y1(3:n)-y1(2:n-1))/h) - (Phalf(2:n-1)./Thalf(2:n-1)).*((y1(2:n-1)-y1(1:n-2))/h));
-% dydz1(n) = (D.*T(n)./(h.*P(n))) * ( (Phalf(n+1)./Thalf(n+1)).*(2/h*(yhalf(n+1)-y1(n)))-(Phalf(n)./Thalf(n)).*((y1(n)-y1(n-1))/h));
 
-% dydz2(1:n) = - T(1:n)./P(1:n) .*(uhalf(2:n+1).*Phalf(2:n+1).*yhalf(2:n+1)./Thalf(2:n+1) - uhalf(1:n).*Phalf(1:n).*yhalf(1:n)./Thalf(1:n))./h;
 dydz2(1:n) = -(T(1:n)./P(1:n)).*( (Phalf(2:n+1).*uhalf(2:n+1).*yhalf(2:n+1)./Thalf(2:n+1)-Phalf(1:n).*uhalf(1:n).*yhalf(1:n)./Thalf(1:n)) - y1(1:n).*(Phalf(2:n+1).*uhalf(2:n+1)./Thalf(2:n+1)-Phalf(1:n).*uhalf(1:n)./Thalf(1:n)) )./h;
 
-% %$ rhop.*y1(1:n).*
-% dydz3(1:n) = (1./epl) .* (R.*rhob.*T(1:n)./P(1:n)) .* ( (y1-1).*dq1dt(1:n) + y1.* (dq2dt(1:n)));
 dydz3(1:n) = - ((rhob*R*T(1:n))/epl./P(1:n)).*(dq1dt(1:n)-y1(1:n).*(dq1dt(1:n)+dq2dt(1:n)));
-% dydz3(1:n) = - ((rhob*R*T(1:n))./epl./P(1:n)).*(dq1dt(1:n));
-
 
 dydz4(1:n) = - y1(1:n)./P(1:n).*dPdt(1:n);
 
